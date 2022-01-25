@@ -69,7 +69,7 @@ class ProjectInput {
             minLength: 5,
         };
         const peopleValidatable = {
-            value: enteredPeople,
+            value: +enteredPeople,
             required: true,
             min: 1,
             max: 5,
