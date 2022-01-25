@@ -1,3 +1,52 @@
+// Validation
+interface Validatable {
+  value: string | number;
+  required: boolean;
+  minLength?: number;
+  maxLength?: number;
+  min?: number;
+  max?: number;
+}
+
+function validate(ValidatableInput: Validatable) {
+  let isValid = true;
+
+  if (ValidatableInput.required) {
+    isValid = isValid && ValidatableInput.value.toString().trim().length !== 0;
+  }
+
+  if (
+    ValidatableInput.minLength != null &&
+    typeof ValidatableInput.value === "string"
+  ) {
+    isValid =
+      isValid && ValidatableInput.value.length > ValidatableInput.minLength;
+  }
+
+  if (
+    ValidatableInput.maxLength != null &&
+    typeof ValidatableInput.value === "string"
+  ) {
+    isValid =
+      isValid && ValidatableInput.value.length < ValidatableInput.maxLength;
+  }
+
+  if (
+    ValidatableInput.min != null &&
+    typeof ValidatableInput.value === "number"
+  ) {
+    isValid = isValid && ValidatableInput.value >= ValidatableInput.min;
+  }
+
+  if (
+    ValidatableInput.max != null &&
+    typeof ValidatableInput.value === "number"
+  ) {
+    isValid = isValid && ValidatableInput.value <= ValidatableInput.max;
+  }
+  return isValid;
+}
+
 // AutoBind Decorator
 function AutoBind(
   _target: any,
@@ -59,10 +108,28 @@ class ProjectInput {
     const enteredDescription = this.descriptionInputElement.value;
     const enteredPeople = this.peopleInputElement.value;
 
+    const titleValidatable: Validatable = {
+      value: enteredTitle,
+      required: true,
+    };
+
+    const descriptionValidatable: Validatable = {
+      value: enteredDescription,
+      required: true,
+      minLength: 5,
+    };
+
+    const peopleValidatable: Validatable = {
+      value: enteredPeople,
+      required: true,
+      min: 1,
+      max: 5,
+    };
+
     if (
-      enteredTitle.trim().length === 0 ||
-      enteredDescription.trim().length === 0 ||
-      enteredPeople.trim().length === 0
+      !validate(titleValidatable) ||
+      !validate(descriptionValidatable) ||
+      !validate(peopleValidatable)
     ) {
       alert("Invalid input, please try again!");
       return;
