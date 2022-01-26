@@ -116,7 +116,8 @@ class ProjectItem extends Component {
         }
     }
     dragStartHandler(event) {
-        console.log(event);
+        event.dataTransfer.setData("text/plain", this.project.id);
+        event.dataTransfer.effectAllowed = "move";
     }
     dragEndHandler(_event) {
         console.log("DragEnd");
@@ -142,12 +143,20 @@ class ProjectList extends Component {
         this.configure();
         this.renderContent();
     }
-    dragOverHandler(_event) {
-        const listEl = this.element.querySelector("ul");
-        listEl.classList.add("droppable");
+    dragOverHandler(event) {
+        if (event.dataTransfer && event.dataTransfer.types[0] === "text/plain") {
+            event.preventDefault();
+            const listEl = this.element.querySelector("ul");
+            listEl.classList.add("droppable");
+        }
     }
-    dropHandler(_event) { }
-    dragLeaveHandler(_event) { }
+    dropHandler(event) {
+        console.log(event.dataTransfer.getData("text/plain"));
+    }
+    dragLeaveHandler(_event) {
+        const listEl = this.element.querySelector("ul");
+        listEl === null || listEl === void 0 ? void 0 : listEl.classList.remove("droppable");
+    }
     configure() {
         this.element.addEventListener("dragover", this.dragOverHandler);
         this.element.addEventListener("dragleave", this.dragLeaveHandler);
@@ -183,6 +192,9 @@ class ProjectList extends Component {
 __decorate([
     AutoBind
 ], ProjectList.prototype, "dragOverHandler", null);
+__decorate([
+    AutoBind
+], ProjectList.prototype, "dragLeaveHandler", null);
 class ProjectInput extends Component {
     constructor() {
         super("project-input", "app", true, "user-input");
