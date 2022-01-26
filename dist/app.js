@@ -115,14 +115,25 @@ class ProjectItem extends Component {
             return `${this.project.people} persons `;
         }
     }
-    configure() { }
+    dragStartHandler(event) {
+        console.log(event);
+    }
+    dragEndHandler(_event) {
+        console.log("DragEnd");
+    }
+    configure() {
+        this.element.addEventListener("dragstart", this.dragStartHandler);
+        this.element.addEventListener("dragend", this.dragEndHandler);
+    }
     renderContent() {
         this.element.querySelector("h2").textContent = this.project.title;
-        this.element.querySelector("h3").textContent =
-            this.Persons + ' assigned.';
+        this.element.querySelector("h3").textContent = this.Persons + " assigned.";
         this.element.querySelector("p").textContent = this.project.description;
     }
 }
+__decorate([
+    AutoBind
+], ProjectItem.prototype, "dragStartHandler", null);
 class ProjectList extends Component {
     constructor(type) {
         super("project-list", "app", false, `${type}-projects`);
@@ -131,7 +142,16 @@ class ProjectList extends Component {
         this.configure();
         this.renderContent();
     }
+    dragOverHandler(_event) {
+        const listEl = this.element.querySelector("ul");
+        listEl.classList.add("droppable");
+    }
+    dropHandler(_event) { }
+    dragLeaveHandler(_event) { }
     configure() {
+        this.element.addEventListener("dragover", this.dragOverHandler);
+        this.element.addEventListener("dragleave", this.dragLeaveHandler);
+        this.element.addEventListener("drop", this.dropHandler);
         projectState.addListener((projects) => {
             const relevantProjects = projects.filter((prj) => {
                 prj.status === ProjectStatus.Active;
@@ -160,6 +180,9 @@ class ProjectList extends Component {
         }
     }
 }
+__decorate([
+    AutoBind
+], ProjectList.prototype, "dragOverHandler", null);
 class ProjectInput extends Component {
     constructor() {
         super("project-input", "app", true, "user-input");
