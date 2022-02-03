@@ -34,6 +34,6 @@ export abstract class Component<T extends HTMLElement, U extends HTMLElement> {
     );
   }
 
-  abstract configure(): void;
   abstract renderContent(): void;
+  abstract configure(): void;
 }
